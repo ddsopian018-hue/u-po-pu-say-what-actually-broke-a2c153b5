@@ -1,35 +1,33 @@
-"""Say What Actually Broke — one line of brutally honest error copy.
+#!/usr/bin/env python3
+"""Say What Actually Broke - make.fun entry.
 
-Writes a single line (at most 200 characters) to
-$MAKEFUN_OUTPUT_DIR/entry.txt naming the real failure: a save that
-silently went nowhere because the document only ever lived in the
-crashed tab's memory. Pure standard library, no network, no absolute
-paths.
+Writes one line (190 characters) to $MAKEFUN_OUTPUT_DIR/entry.txt:
+the plain, specific truth about a lost document. Pure stdlib,
+no network, no secrets, no hard-coded output path.
 """
 
 import os
 
+# The joke: the save that never saved — 47 minutes of typing existed
+# only in the tab's memory, so the crash didn't lose the file, it
+# revealed there never was one. A specific failure, not a generic crash.
 LINE = (
-    "Your save didn't save. The document lived only in this tab's "
-    "memory, and the tab just crashed, taking 47 minutes of typing "
-    "with it. Nothing reached the disk \u2014 reopen the file and "
-    "start over."
+    "Your save didn't save. The document lived only in this tab's memory, "
+    "and the tab just crashed, taking 47 minutes of typing with it. "
+    "Nothing reached the disk \u2014 reopen the file and start over."
 )
 
-MAX_CHARS = 200
 
-
-def main() -> None:
-    assert "\n" not in LINE, "entry must be a single line"
-    assert 1 <= len(LINE) <= MAX_CHARS, (
-        f"entry is {len(LINE)} characters, must be 1-{MAX_CHARS}"
+def main():
+    assert 1 <= len(LINE) <= 200, "LINE must be 1-200 characters"
+    assert "\n" not in LINE, "LINE must be a single line"
+    out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR") or os.path.join(
+        os.getcwd(), "output"
     )
-    out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR", "output")
     os.makedirs(out_dir, exist_ok=True)
     path = os.path.join(out_dir, "entry.txt")
-    with open(path, "w", encoding="utf-8") as f:
+    with open(path, "w", encoding="utf-8", newline="") as f:
         f.write(LINE)
-    print(f"wrote {len(LINE)} characters to {path}")
 
 
 if __name__ == "__main__":
